@@ -1,0 +1,111 @@
+loop:
+    hai 0x0
+    lia 0xA # value
+
+    tiz 1
+    bis 0xF # even
+
+    mov b
+    add a
+    add a
+    adi a, 1
+
+    hai 0x3
+    jmi 0x0 # finish
+value:
+    0x34
+shifted:
+    0x00
+mask:
+    0x3F
+bit5:
+    0x20
+bit6:
+    0x40
+even:
+F   mov b
+    lia 0xC # mask
+    and b
+    lia 0xE # bit6 / address of rshift
+    add b
+    ldr a
+    sia 0xB # shifted
+
+    lia 0xE # bit6
+    mov b
+    lia 0xA # value
+    tsz
+
+    hai 0x2
+    bis 0x5 # skip_bit6
+
+    hai 0x0
+    lia 0xD # bit5
+    mov b
+F   lia 0xB # shifted
+    orr a
+    sia 0xB # shifted
+
+    hai 0x2
+    jmi 0x5 # skip_bit6
+
+bit7:
+    0x80
+skip_bit6:
+    lia 0x4 # bit7
+    mov b
+    hia 0x0
+    lia 0xA # value
+    tsz
+
+    lia 0xB # shifted
+
+    hai 0x3
+    bis 0x0 # finish
+
+    mov b
+    lia 0xC # bit6_2
+F   orr a
+
+finish:
+    hai 0x0
+    sia 0xA # value
+    mov b
+
+    hai 0x3
+    lia 0xD # bcd_addr
+    add b
+    ldr a
+
+    hai 0xF
+    sia 0xD
+
+    ciz 1
+    hai 0x0
+    bns 0x0 # loop
+bit6_2:
+    hlt # hlt = 0x40
+bcd_addr:
+    0x80
+
+rshift: # At address 0x40
+    0x00
+    0x00
+    0x01
+    0x01
+    ..
+    0x1F
+    0x1F
+
+bcd_convert: # At address 0x80
+    0x00
+    0x01
+    0x02
+    ..
+    0x09
+    0x10
+    ..
+    0x99
+
+low_7sd: # At address 0x7D
+    0x52
